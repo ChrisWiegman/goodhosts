@@ -56,6 +56,35 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 	}
 }
 
+func TestHostsAddWithComment(t *testing.T) {
+	hosts := new(Hosts)
+	hosts.Lines = []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada"),
+		NewHostsLine("10.0.0.7 yadda"),
+	}
+
+	hosts.Add("10.0.0.7", "Test Comment", "brada", "yadda")
+
+	expectedLines := []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada"),
+		NewHostsLine("10.0.0.7 yadda"),
+	}
+
+	bradaLine := NewHostsLine("10.0.0.7 brada")
+	yaddaLine := NewHostsLine("10.0.0.7 yadda")
+	bradaLine.comment = "Test Comment"
+	yaddaLine.comment = "Test Comment"
+
+	expectedLines = append(expectedLines, bradaLine)
+	expectedLines = append(expectedLines, yaddaLine)
+
+	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
+		t.Error("Add entry failed to append entry.")
+	}
+}
+
 func TestHostsAddWhenIpDoesntExist(t *testing.T) {
 	hosts := new(Hosts)
 	hosts.Lines = []HostsLine{
@@ -113,5 +142,30 @@ func TestHostsRemoveMultipleEntries(t *testing.T) {
 	hosts.Remove("127.0.0.1", "yadda", "prada")
 	if hosts.Lines[0].Raw != "127.0.0.1 nadda" {
 		t.Error("Failed to remove multiple entries.")
+	}
+}
+
+func TestHostsRemoveLineWithComments(t *testing.T) {
+	hosts := new(Hosts)
+
+	hosts.Lines = []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 brada"),
+	}
+
+	nadaLine := NewHostsLine("10.0.0.7 nada")
+	nadaLine.comment = "Test comment"
+
+	hosts.Lines = append(hosts.Lines, nadaLine)
+
+	hosts.Remove("10.0.0.7", "nada")
+
+	expectedLines := []HostsLine{
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 brada"),
+	}
+
+	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
+		t.Error("Remove entry failed to remove entry.")
 	}
 }
