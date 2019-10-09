@@ -48,7 +48,6 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 		NewHostsLine("10.0.0.7 nada"),
 		NewHostsLine("10.0.0.7 yadda"),
 		NewHostsLine("10.0.0.7 brada"),
-		NewHostsLine("10.0.0.7 yadda"),
 	}
 
 	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
@@ -61,7 +60,6 @@ func TestHostsAddWithComment(t *testing.T) {
 	hosts.Lines = []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
 		NewHostsLine("10.0.0.7 nada"),
-		NewHostsLine("10.0.0.7 yadda"),
 	}
 
 	hosts.Add("10.0.0.7", "Test Comment", "brada", "yadda")
@@ -69,16 +67,9 @@ func TestHostsAddWithComment(t *testing.T) {
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
 		NewHostsLine("10.0.0.7 nada"),
-		NewHostsLine("10.0.0.7 yadda"),
+		NewHostsLine("10.0.0.7 brada #Test Comment"),
+		NewHostsLine("10.0.0.7 yadda #Test Comment"),
 	}
-
-	bradaLine := NewHostsLine("10.0.0.7 brada")
-	yaddaLine := NewHostsLine("10.0.0.7 yadda")
-	bradaLine.comment = "Test Comment"
-	yaddaLine.comment = "Test Comment"
-
-	expectedLines = append(expectedLines, bradaLine)
-	expectedLines = append(expectedLines, yaddaLine)
 
 	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
 		t.Error("Add entry failed to append entry.")
@@ -154,7 +145,7 @@ func TestHostsRemoveLineWithComments(t *testing.T) {
 	}
 
 	nadaLine := NewHostsLine("10.0.0.7 nada")
-	nadaLine.comment = "Test comment"
+	nadaLine.Comment = "Test comment"
 
 	hosts.Lines = append(hosts.Lines, nadaLine)
 
