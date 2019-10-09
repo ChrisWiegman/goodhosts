@@ -77,12 +77,15 @@ func (h Hosts) Flush() error {
 
 // Add an entry to the hosts file.
 func (h *Hosts) Add(ip string, hosts ...string) error {
+
 	if net.ParseIP(ip) == nil {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
-	endLine := NewHostsLine(buildRawLine(ip, hosts))
-	h.Lines = append(h.Lines, endLine)
+	for _, host := range hosts {
+		endLine := NewHostsLine(buildRawLine(ip, []string{host}))
+		h.Lines = append(h.Lines, endLine)
+	}
 
 	return nil
 }
