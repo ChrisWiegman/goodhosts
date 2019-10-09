@@ -155,7 +155,7 @@ func main() {
 
 ## Changelog
 
-### 3.0.0 (2019-10-09)
+### 3.0.1 (2019-10-09)
 
 * Refactored with go mod support
 * Added ability to comment lines
