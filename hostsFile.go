@@ -2,7 +2,6 @@ package goodhosts
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -79,27 +78,11 @@ func (h Hosts) Flush() error {
 // Add an entry to the hosts file.
 func (h *Hosts) Add(ip string, hosts ...string) error {
 	if net.ParseIP(ip) == nil {
-		return fmt.Errorf("%q is an invalid IP address.", ip)
+		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
-	position := h.getIPPosition(ip)
-	if position == -1 {
-		endLine := NewHostsLine(buildRawLine(ip, hosts))
-		// Ip line is not in file, so we just append our new line.
-		h.Lines = append(h.Lines, endLine)
-	} else {
-		// Otherwise, we replace the line in the correct position
-		newHosts := h.Lines[position].Hosts
-		for _, addHost := range hosts {
-			if itemInSlice(addHost, newHosts) {
-				continue
-			}
-
-			newHosts = append(newHosts, addHost)
-		}
-		endLine := NewHostsLine(buildRawLine(ip, newHosts))
-		h.Lines[position] = endLine
-	}
+	endLine := NewHostsLine(buildRawLine(ip, hosts))
+	h.Lines = append(h.Lines, endLine)
 
 	return nil
 }
@@ -116,7 +99,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 	var outputLines []HostsLine
 
 	if net.ParseIP(ip) == nil {
-		return errors.New(fmt.Sprintf("%q is an invalid IP address.", ip))
+		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
 	for _, line := range h.Lines {
