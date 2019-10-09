@@ -32,12 +32,12 @@ Options:
 
 	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 3.0.1", false)
 
-	hosts, err := goodhosts.NewHosts()
+	hosts, err := goodhosts.NewHosts("")
 	check(err)
 
 	if args["list"].(bool) {
 		total := 0
-		for _, line := range hosts.Lines {
+		for _, line := range hosts.FileLines {
 			var lineOutput string
 
 			if goodhosts.IsComment(line.Raw) && !args["--all"].(bool) {

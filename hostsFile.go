@@ -9,8 +9,10 @@ import (
 
 // Hosts Represents a hosts file.
 type Hosts struct {
-	Path  string
-	Lines []HostsLine
+	Path         string
+	Section      string
+	FileLines    []HostsLine
+	SectionLines []HostsLine
 }
 
 // IsWritable Return ```true``` if hosts file is writable.
@@ -49,7 +51,7 @@ func (h *Hosts) Load() error {
 		return err
 	}
 
-	h.Lines = lines
+	h.FileLines = lines
 
 	return nil
 }
@@ -64,7 +66,7 @@ func (h Hosts) Flush() error {
 
 	w := bufio.NewWriter(file)
 
-	for _, line := range h.Lines {
+	for _, line := range h.FileLines {
 		fmt.Fprintf(w, "%s%s", line.Raw, eol)
 	}
 
@@ -88,7 +90,7 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 		if !h.Has(ip, host) {
 			endLine := NewHostsLine(buildRawLine(ip, host, comment))
 			endLine.Comment = comment
-			h.Lines = append(h.Lines, endLine)
+			h.FileLines = append(h.FileLines, endLine)
 		}
 	}
 
@@ -110,7 +112,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
-	for _, line := range h.Lines {
+	for _, line := range h.FileLines {
 
 		// Bad lines or comments just get readded.
 		if line.Err != nil || IsComment(line.Raw) || line.IP != ip {
@@ -142,14 +144,14 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		}
 	}
 
-	h.Lines = outputLines
+	h.FileLines = outputLines
 	return nil
 }
 
 func (h Hosts) getHostPosition(ip string, host string) int {
 
-	for i := range h.Lines {
-		line := h.Lines[i]
+	for i := range h.FileLines {
+		line := h.FileLines[i]
 		if !IsComment(line.Raw) && line.Raw != "" {
 			if ip == line.IP && itemInSlice(host, line.Hosts) {
 				return i
@@ -161,8 +163,8 @@ func (h Hosts) getHostPosition(ip string, host string) int {
 }
 
 func (h Hosts) getIPPosition(ip string) int {
-	for i := range h.Lines {
-		line := h.Lines[i]
+	for i := range h.FileLines {
+		line := h.FileLines[i]
 		if !IsComment(line.Raw) && line.Raw != "" {
 			if line.IP == ip {
 				return i

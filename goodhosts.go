@@ -6,7 +6,7 @@ import (
 )
 
 // NewHosts Return a new instance of ``Hosts``.
-func NewHosts() (Hosts, error) {
+func NewHosts(sectionName string) (Hosts, error) {
 	osHostsFilePath := ""
 
 	if os.Getenv("HOSTS_PATH") == "" {
@@ -15,7 +15,10 @@ func NewHosts() (Hosts, error) {
 		osHostsFilePath = os.Getenv("HOSTS_PATH")
 	}
 
-	hosts := Hosts{Path: osHostsFilePath}
+	hosts := Hosts{
+		Path:    osHostsFilePath,
+		Section: sectionName,
+	}
 
 	err := hosts.Load()
 	if err != nil {
