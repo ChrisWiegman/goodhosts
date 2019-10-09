@@ -1,5 +1,7 @@
 # Goodhosts
 
+[![Build Status](https://travis-ci.org/ChrisWiegman/goodhosts.svg?branch=master)](https://travis-ci.org/ChrisWiegman/goodhosts)
+
 This is a fork of [https://github.com/lextoumbourou/goodhosts] as we needed a bit deeper management.
 
 Simple [hosts file](http://en.wikipedia.org/wiki/Hosts_%28file%29) (```/etc/hosts```) management in Go (golang).
