@@ -1,4 +1,4 @@
-module github.com/ChrisWiegman/goodhosts
+module github.com/ChrisWiegman/goodhosts/v3
 
 go 1.13
 

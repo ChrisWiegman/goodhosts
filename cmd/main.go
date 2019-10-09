@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ChrisWiegman/goodhosts"
+	"github.com/ChrisWiegman/goodhosts/v3"
 	"github.com/docopt/docopt-go"
 )
 
