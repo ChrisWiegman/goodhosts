@@ -87,7 +87,7 @@ Options:
 			os.Exit(1)
 		}
 
-		err = hosts.Add(ip, "", hostEntries...)
+		err = hosts.Add(ip, "This is a test comment", hostEntries...)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s", err.Error()))
 			os.Exit(2)

@@ -15,9 +15,13 @@ func itemInSlice(item string, list []string) bool {
 	return false
 }
 
-func buildRawLine(ip string, host string) string {
+func buildRawLine(ip string, host, comment string) string {
 	output := ip
-	output = fmt.Sprintf("%s %s", output, host)
+
+	if len(comment) > 0 {
+		comment = "#" + comment
+	}
+	output = fmt.Sprintf("%s %s %s", output, host, comment)
 
 	return output
 }

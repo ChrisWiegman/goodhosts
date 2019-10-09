@@ -56,6 +56,7 @@ func (h *Hosts) Load() error {
 
 // Flush any changes made to hosts file.
 func (h Hosts) Flush() error {
+
 	file, err := os.Create(h.Path)
 	if err != nil {
 		return err
@@ -64,11 +65,7 @@ func (h Hosts) Flush() error {
 	w := bufio.NewWriter(file)
 
 	for _, line := range h.Lines {
-		var comment string
-		if len(line.comment) > 0 {
-			comment = " #" + line.comment
-		}
-		fmt.Fprintf(w, "%s%s%s", line.Raw, comment, eol)
+		fmt.Fprintf(w, "%s%s", line.Raw, eol)
 	}
 
 	err = w.Flush()
@@ -88,16 +85,18 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 
 	for _, host := range hosts {
 
-		endLine := NewHostsLine(buildRawLine(ip, host))
-		endLine.comment = comment
-		h.Lines = append(h.Lines, endLine)
+		if !h.Has(ip, host) {
+			endLine := NewHostsLine(buildRawLine(ip, host, comment))
+			endLine.Comment = comment
+			h.Lines = append(h.Lines, endLine)
+		}
 	}
 
 	return nil
 }
 
 // Has Return a bool if ip/host combo in hosts file.
-func (h Hosts) Has(ip string, host string) bool {
+func (h *Hosts) Has(ip string, host string) bool {
 	pos := h.getHostPosition(ip, host)
 
 	return pos != -1
@@ -133,6 +132,11 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 			for _, host := range newHosts {
 				newLineRaw = fmt.Sprintf("%s %s", newLineRaw, host)
 			}
+
+			if len(line.Comment) > 0 {
+				newLineRaw = fmt.Sprintf("%s #%s", newLineRaw, line.Comment)
+			}
+
 			newLine := NewHostsLine(newLineRaw)
 			outputLines = append(outputLines, newLine)
 		}

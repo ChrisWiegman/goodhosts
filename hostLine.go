@@ -10,7 +10,7 @@ import (
 type HostsLine struct {
 	IP      string
 	Hosts   []string
-	comment string
+	Comment string
 	Raw     string
 	Err     error
 }
@@ -35,7 +35,8 @@ func NewHostsLine(raw string) HostsLine {
 
 		for i, field := range fields {
 			if IsComment(field) {
-				output.comment = field[i:]
+				output.Comment = strings.Join(fields[i:], " ")
+				output.Comment = output.Comment[1:]
 				break
 			}
 			outputFields = append(outputFields, field)
