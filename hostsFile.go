@@ -83,7 +83,8 @@ func (h *Hosts) Add(ip string, hosts ...string) error {
 	}
 
 	for _, host := range hosts {
-		endLine := NewHostsLine(buildRawLine(ip, []string{host}))
+
+		endLine := NewHostsLine(buildRawLine(ip, host))
 		h.Lines = append(h.Lines, endLine)
 	}
 

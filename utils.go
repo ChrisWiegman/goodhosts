@@ -12,11 +12,9 @@ func itemInSlice(item string, list []string) bool {
 	return false
 }
 
-func buildRawLine(ip string, hosts []string) string {
+func buildRawLine(ip string, host string) string {
 	output := ip
-	for _, host := range hosts {
-		output = fmt.Sprintf("%s %s", output, host)
-	}
+	output = fmt.Sprintf("%s %s", output, host)
 
 	return output
 }

@@ -11,7 +11,7 @@ func TestHostsLineIsComment(t *testing.T) {
 	line := NewHostsLine(comment)
 	result := line.IsComment()
 	if !result {
-		t.Error(fmt.Sprintf("'%s' should be a comment"), comment)
+		t.Error(fmt.Sprintf("'%s' should be a comment", comment))
 	}
 }
 
@@ -51,12 +51,20 @@ func TestHostsHasDoesntFindMissingEntry(t *testing.T) {
 func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 	hosts := new(Hosts)
 	hosts.Lines = []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada yadda")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada"),
+		NewHostsLine("10.0.0.7 yadda"),
+	}
 
 	hosts.Add("10.0.0.7", "brada", "yadda")
 
 	expectedLines := []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada yadda brada")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada"),
+		NewHostsLine("10.0.0.7 yadda"),
+		NewHostsLine("10.0.0.7 brada"),
+		NewHostsLine("10.0.0.7 yadda"),
+	}
 
 	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
 		t.Error("Add entry failed to append entry.")
@@ -66,12 +74,16 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 func TestHostsAddWhenIpDoesntExist(t *testing.T) {
 	hosts := new(Hosts)
 	hosts.Lines = []HostsLine{
-		NewHostsLine("127.0.0.1 yadda")}
+		NewHostsLine("127.0.0.1 yadda"),
+	}
 
 	hosts.Add("10.0.0.7", "brada", "yadda")
 
 	expectedLines := []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 brada yadda")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 brada"),
+		NewHostsLine("10.0.0.7 yadda"),
+	}
 
 	if !reflect.DeepEqual(hosts.Lines, expectedLines) {
 		t.Error("Add entry failed to append entry.")
