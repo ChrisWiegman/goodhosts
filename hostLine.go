@@ -8,17 +8,11 @@ import (
 
 // HostsLine Represents a single line in the hosts file.
 type HostsLine struct {
-	IP    string
-	Hosts []string
-	Raw   string
-	Err   error
-}
-
-// IsComment Return ```true``` if the line is a comment.
-func (l HostsLine) IsComment() bool {
-	trimLine := strings.TrimSpace(l.Raw)
-	isComment := strings.HasPrefix(trimLine, commentChar)
-	return isComment
+	IP      string
+	Hosts   []string
+	comment string
+	Raw     string
+	Err     error
 }
 
 // NewHostsLine Return a new instance of ```HostsLine```.
@@ -30,14 +24,25 @@ func NewHostsLine(raw string) HostsLine {
 	}
 
 	output := HostsLine{Raw: raw}
-	if !output.IsComment() {
+	if !IsComment(output.Raw) {
 		rawIP := fields[0]
 		if net.ParseIP(rawIP) == nil {
 			output.Err = fmt.Errorf("Bad hosts line: %q", raw)
 		}
 
 		output.IP = rawIP
-		output.Hosts = fields[1:]
+		var outputFields []string
+
+		for i, field := range fields {
+			if IsComment(field) {
+				output.comment = field[i:]
+				break
+			}
+			outputFields = append(outputFields, field)
+		}
+
+		output.Hosts = outputFields[1:]
+
 	}
 
 	return output

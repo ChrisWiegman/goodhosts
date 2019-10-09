@@ -40,7 +40,7 @@ Options:
 		for _, line := range hosts.Lines {
 			var lineOutput string
 
-			if line.IsComment() && !args["--all"].(bool) {
+			if goodhosts.IsComment(line.Raw) && !args["--all"].(bool) {
 				continue
 			}
 
@@ -48,7 +48,7 @@ Options:
 			if line.Err != nil {
 				lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
 			}
-			total += 1
+			total++
 
 			fmt.Println(lineOutput)
 		}
@@ -87,7 +87,7 @@ Options:
 			os.Exit(1)
 		}
 
-		err = hosts.Add(ip, hostEntries...)
+		err = hosts.Add(ip, "", hostEntries...)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s", err.Error()))
 			os.Exit(2)

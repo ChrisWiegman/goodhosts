@@ -9,7 +9,7 @@ import (
 func TestHostsLineIsComment(t *testing.T) {
 	comment := "   # This is a comment   "
 	line := NewHostsLine(comment)
-	result := line.IsComment()
+	result := IsComment(line.Raw)
 	if !result {
 		t.Error(fmt.Sprintf("'%s' should be a comment", comment))
 	}
