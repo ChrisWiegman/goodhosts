@@ -1,11 +1,8 @@
 # Goodhosts
 
+This is a fork of [https://github.com/lextoumbourou/goodhosts] as we needed a bit deeper management.
+
 Simple [hosts file](http://en.wikipedia.org/wiki/Hosts_%28file%29) (```/etc/hosts```) management in Go (golang).
-
-<img src="http://www.hangthebankers.com/wp-content/uploads/2013/09/Masks-Rothschild-party1.jpg" width=400><br>
-[A Surrealist Parisian Dinner Party chez Madame Rothschild, 1972](http://www.messynessychic.com/2013/08/27/a-surrealist-parisian-dinner-party-chez-madame-rothschild-1972/)
-
-[![Build Status](https://travis-ci.org/lextoumbourou/goodhosts.svg)](https://travis-ci.org/lextoumbourou/goodhosts)
 
 ## Features
 
@@ -13,24 +10,6 @@ Simple [hosts file](http://en.wikipedia.org/wiki/Hosts_%28file%29) (```/etc/host
 * Windows support.
 
 ## Command-Line Usage
-
-### Installation
-
-#### Linux
-
-Download the [binary](https://github.com/lextoumbourou/goodhosts/releases/download/v2.1.0/goodhosts-linux) and put it in your path.
-
-```bash
-$ wget -O goodhosts https://github.com/lextoumbourou/goodhosts/releases/download/v2.1.0/goodhosts-linux
-$ chmod +x goodhosts
-$ export PATH=$(pwd):$PATH
-$ goodhosts --help
-```
-
-#### Windows
-
-Download the [binary](https://github.com/lextoumbourou/goodhosts/releases/download/v2.1.0/goodhosts-windows) and do Windowsy stuff with it (doc PR welcome).
-
 
 ### List entries
 
@@ -84,7 +63,7 @@ $ goodhosts --help
 ### Installation
 
 ```bash
-$ go get github.com/lextoumbourou/goodhosts
+$ go get github.com/ChrisWiegman/goodhosts
 ```
 
 ### List entries
@@ -94,7 +73,7 @@ package main
 
 import (
     "fmt"
-    "github.com/lextoumbourou/goodhosts"
+    "github.com/ChrisWiegman/goodhosts"
 )
 
 func main() {
@@ -113,7 +92,7 @@ package main
 
 import (
     "fmt"
-    "github.com/lextoumbourou/goodhosts"
+    "github.com/ChrisWiegman/goodhosts"
 )
 
 func main() {
@@ -135,14 +114,14 @@ package main
 
 import (
     "fmt"
-    "github.com/lextoumbourou/goodhosts"
+    "github.com/ChrisWiegman/goodhosts"
 )
 
 func main() {
     hosts := goodhosts.NewHosts()
 
     // Note that nothing will be added to the hosts file until ``hosts.Flush`` is called.
-    hosts.Add("127.0.0.1", "facebook.com", "twitter.com")
+    hosts.Add("127.0.0.1", "This is a line comment", "facebook.com", "twitter.com")
 
     if err := hosts.Flush(); err != nil {
         panic(err)
@@ -157,7 +136,7 @@ package main
 
 import (
     "fmt"
-    "github.com/lextoumbourou/goodhosts"
+    "github.com/ChrisWiegman/goodhosts"
 )
 
 func main() {
@@ -175,6 +154,12 @@ func main() {
 ### [More](API.md)
 
 ## Changelog
+
+### 3.0.0 (2019-10-09)
+
+* Refactored with go mod support
+* Added ability to comment lines
+* Only one host per line for easier management
 
 ### 2.1.0 (2015-06-08)
 

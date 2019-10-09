@@ -26,7 +26,7 @@ Return a new instance of ``Hosts``.
 #### func (*Hosts) Add
 
 ```go
-func (h *Hosts) Add(ip string, hosts ...string) error
+func (h *Hosts) Add(ip, comment string, hosts ...string) error
 ```
 Add an entry to the hosts file.
 
@@ -90,6 +90,6 @@ Return a new instance of ```HostsLine```.
 #### func (HostsLine) IsComment
 
 ```go
-func (l HostsLine) IsComment() bool
+func IsComment(line string) bool
 ```
 Return ```true``` if the line is a comment.

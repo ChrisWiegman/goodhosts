@@ -30,7 +30,7 @@ Options:
   -h --help     Show this screen.
   --version     Show the version.`
 
-	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 2.0.0", false)
+	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 3.0.0", false)
 
 	hosts, err := goodhosts.NewHosts()
 	check(err)
