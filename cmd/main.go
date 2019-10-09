@@ -32,7 +32,7 @@ Options:
 
 	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 3.0.1", false)
 
-	hosts, err := goodhosts.NewHosts("")
+	hosts, err := goodhosts.NewHosts("DevKit2")
 	check(err)
 
 	if args["list"].(bool) {

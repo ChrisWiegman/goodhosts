@@ -7,6 +7,9 @@ import (
 	"os"
 )
 
+const sectionStart = "### Start Hosts for"
+const sectionEnd = "### End Hosts for"
+
 // Hosts Represents a hosts file.
 type Hosts struct {
 	Path         string
@@ -29,7 +32,9 @@ func (h *Hosts) IsWritable() bool {
 // ```Load()``` is called by ```NewHosts()``` and ```Hosts.Flush()``` so you
 // generally you won't need to call this yourself.
 func (h *Hosts) Load() error {
-	var lines []HostsLine
+	var fileLines []HostsLine
+	var sectionLines []HostsLine
+	var inSection bool
 
 	file, err := os.Open(h.Path)
 	if err != nil {
@@ -39,19 +44,38 @@ func (h *Hosts) Load() error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
+
 		line := NewHostsLine(scanner.Text())
 		if err != nil {
 			return err
 		}
 
-		lines = append(lines, line)
+		if line.Raw == fmt.Sprintf("%s %s", sectionEnd, h.Section) {
+			inSection = false
+		}
+
+		if inSection {
+			sectionLines = append(sectionLines, line)
+		}
+
+		if line.Raw == fmt.Sprintf("%s %s", sectionStart, h.Section) {
+			inSection = true
+		}
+
+		fileLines = append(fileLines, line)
 	}
 
 	if err := scanner.Err(); err != nil {
 		return err
 	}
 
-	h.FileLines = lines
+	h.FileLines = fileLines
+
+	if len(h.Section) > 0 {
+		h.SectionLines = sectionLines
+	} else {
+		h.SectionLines = fileLines
+	}
 
 	return nil
 }
@@ -59,21 +83,72 @@ func (h *Hosts) Load() error {
 // Flush any changes made to hosts file.
 func (h Hosts) Flush() error {
 
-	file, err := os.Create(h.Path)
-	if err != nil {
-		return err
+	//file, err := os.Create(h.Path)
+	//if err != nil {
+	//return err
+	//}
+
+	var writeLines []HostsLine
+
+	if len(h.Section) > 0 {
+
+		var inSection bool
+		var sectionMerged bool
+
+		for _, fileLine := range h.FileLines {
+
+			if fileLine.Raw == fmt.Sprintf("%s %s", sectionEnd, h.Section) {
+				inSection = false
+			}
+
+			if inSection && !sectionMerged {
+				for _, sectionLine := range h.SectionLines {
+					writeLines = append(writeLines, sectionLine)
+				}
+				sectionMerged = true
+			} else if !inSection {
+
+				if len(h.SectionLines) != 0 && (fileLine.Raw != fmt.Sprintf("%s %s", sectionEnd, h.Section) && fileLine.Raw != fmt.Sprintf("%s %s", sectionStart, h.Section)) {
+					writeLines = append(writeLines, fileLine)
+				}
+			}
+
+			if fileLine.Raw == fmt.Sprintf("%s %s", sectionStart, h.Section) {
+				inSection = true
+			}
+		}
+
+		if !sectionMerged && len(h.SectionLines) > 0 {
+			writeLines = append(writeLines, NewHostsLine(eol))
+			writeLines = append(writeLines, NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
+			for _, sectionLine := range h.SectionLines {
+				writeLines = append(writeLines, sectionLine)
+			}
+			writeLines = append(writeLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)))
+			writeLines = append(writeLines, NewHostsLine(eol))
+		}
+
+	} else {
+
+		writeLines = h.FileLines
+
 	}
 
-	w := bufio.NewWriter(file)
-
-	for _, line := range h.FileLines {
-		fmt.Fprintf(w, "%s%s", line.Raw, eol)
+	for _, line := range writeLines {
+		fmt.Printf("%s%s", line.Raw, eol)
 	}
+	return nil
 
-	err = w.Flush()
-	if err != nil {
-		return err
-	}
+	//w := bufio.NewWriter(file)
+
+	//for _, line := range writeLines {
+	//fmt.Fprintf(w, "%s%s", line.Raw, eol)
+	//}
+
+	//err = w.Flush()
+	//if err != nil {
+	//return err
+	//}
 
 	return h.Load()
 }
@@ -90,7 +165,7 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 		if !h.Has(ip, host) {
 			endLine := NewHostsLine(buildRawLine(ip, host, comment))
 			endLine.Comment = comment
-			h.FileLines = append(h.FileLines, endLine)
+			h.SectionLines = append(h.SectionLines, endLine)
 		}
 	}
 
@@ -112,7 +187,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
-	for _, line := range h.FileLines {
+	for _, line := range h.SectionLines {
 
 		// Bad lines or comments just get readded.
 		if line.Err != nil || IsComment(line.Raw) || line.IP != ip {
@@ -144,7 +219,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		}
 	}
 
-	h.FileLines = outputLines
+	h.SectionLines = outputLines
 	return nil
 }
 
