@@ -1,31 +1,16 @@
 package goodhosts
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
 
-func TestHostsLineIsComment(t *testing.T) {
-	comment := "   # This is a comment   "
-	line := NewHostsLine(comment)
-	result := IsComment(line.Raw)
-	if !result {
-		t.Error(fmt.Sprintf("'%s' should be a comment", comment))
-	}
-}
-
-func TestNewHostsLineWithEmptyLine(t *testing.T) {
-	line := NewHostsLine("")
-	if line.Raw != "" {
-		t.Error("Failed to load empty line.")
-	}
-}
-
 func TestHostsHas(t *testing.T) {
 	hosts := new(Hosts)
 	hosts.Lines = []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada"),
+	}
 
 	// We should find this entry.
 	if !hosts.Has("10.0.0.7", "nada") {
@@ -56,7 +41,7 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 		NewHostsLine("10.0.0.7 yadda"),
 	}
 
-	hosts.Add("10.0.0.7", "brada", "yadda")
+	hosts.Add("10.0.0.7", "", "brada", "yadda")
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
@@ -77,7 +62,7 @@ func TestHostsAddWhenIpDoesntExist(t *testing.T) {
 		NewHostsLine("127.0.0.1 yadda"),
 	}
 
-	hosts.Add("10.0.0.7", "brada", "yadda")
+	hosts.Add("10.0.0.7", "", "brada", "yadda")
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
