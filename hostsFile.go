@@ -134,6 +134,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 }
 
 func (h Hosts) getHostPosition(ip string, host string) int {
+
 	for i := range h.Lines {
 		line := h.Lines[i]
 		if !line.IsComment() && line.Raw != "" {
