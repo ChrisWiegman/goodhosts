@@ -54,6 +54,12 @@ Or *entries*.
 $ goodhosts rm 127.0.0.1 facebook.com twitter.com gmail.com
 ```
 
+### Remove an section
+
+```bash
+$ goodhosts removesection sectionname
+```
+
 ### More
 
 ```bash
@@ -79,7 +85,7 @@ import (
 )
 
 func main() {
-    hosts := goodhosts.NewHosts()
+    hosts := goodhosts.NewHosts("")
 
     for _, line := range hosts.Lines {
         fmt.Println(line.Raw)
@@ -98,9 +104,9 @@ import (
 )
 
 func main() {
-    hosts := goodhosts.NewHosts()
+    hosts := goodhosts.NewHosts("")
 
-    if hosts.Has("127.0.0.1", "facebook.com") {
+    if hosts.Has("127.0.0.1", "facebook.com", true) {
         fmt.Println("Entry exists!")
         return
     }
@@ -120,7 +126,7 @@ import (
 )
 
 func main() {
-    hosts := goodhosts.NewHosts()
+    hosts := goodhosts.NewHosts("")
 
     // Note that nothing will be added to the hosts file until ``hosts.Flush`` is called.
     hosts.Add("127.0.0.1", "This is a line comment", "facebook.com", "twitter.com")
@@ -142,7 +148,7 @@ import (
 )
 
 func main() {
-    hosts := goodhosts.NewHosts()
+    hosts := goodhosts.NewHosts("")
 
     // Same deal, yo: call hosts.Flush() to make permanent.
     hosts.Remove("127.0.0.1", "facebook.com", "twitter.com")
@@ -158,12 +164,15 @@ func main() {
 ## Changelog
 
 ### 3.2 (2019-10-10)
+
 * Add ability to remove an entire section
 
 ### 3.1.1 (2019-10-10)
+
 * Fix existing tests
 
 ### 3.1 (2019-10-10)
+
 * Allow sectioning of IP addresses with "section name" in api
 * Various bugfixes
 
@@ -187,10 +196,8 @@ func main() {
 
 ### 1.0.0 (2015-05-03)
 
-- Initial release.
+* Initial release.
 
 ## License
 
 [MIT](LICENSE)
-
-<img src="http://static.messynessychic.com/wp-content/uploads/2013/08/rothschildparty2.jpg" width=400><br>

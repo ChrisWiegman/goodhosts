@@ -9,8 +9,10 @@
 
 ```go
 type Hosts struct {
-	Path  string
-	Lines []HostsLine
+	Path         string
+	Section      string
+	FileLines    []HostsLine
+	SectionLines []HostsLine
 }
 ```
 
@@ -19,9 +21,16 @@ Represents a hosts file.
 #### func  NewHosts
 
 ```go
-func NewHosts() (Hosts, error)
+func NewHosts("") (Hosts, error)
 ```
 Return a new instance of ``Hosts``.
+
+#### func IsComment
+
+```go
+func IsComment(line string) bool
+```
+Return ```true``` if the string is a comment.
 
 #### func (*Hosts) Add
 
@@ -40,7 +49,7 @@ Flush any changes made to hosts file.
 #### func (Hosts) Has
 
 ```go
-func (h Hosts) Has(ip string, host string, foreFile bool) bool
+func (h Hosts) Has(ip string, host string, forceFile bool) bool
 ```
 Return a bool if ip/host combo in hosts file.
 
@@ -71,10 +80,11 @@ Remove an entry from the hosts file.
 
 ```go
 type HostsLine struct {
-	IP    string
-	Hosts []string
-	Raw   string
-	Err   error
+	IP      string
+	Hosts   []string
+	Comment string
+	Raw     string
+	Err     error
 }
 ```
 
@@ -86,10 +96,3 @@ Represents a single line in the hosts file.
 func NewHostsLine(raw string) HostsLine
 ```
 Return a new instance of ```HostsLine```.
-
-#### func (HostsLine) IsComment
-
-```go
-func IsComment(line string) bool
-```
-Return ```true``` if the line is a comment.
