@@ -157,6 +157,9 @@ func main() {
 
 ## Changelog
 
+### 3.2 (2019-10-10)
+* Add ability to remove an entire section
+
 ### 3.1.1 (2019-10-10)
 * Fix existing tests
 
