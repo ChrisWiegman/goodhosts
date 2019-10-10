@@ -157,6 +157,9 @@ func main() {
 
 ## Changelog
 
+### 3.1.1 (2019-10-10)
+* Fix existing tests
+
 ### 3.1 (2019-10-10)
 * Allow sectioning of IP addresses with "section name" in api
 * Various bugfixes
