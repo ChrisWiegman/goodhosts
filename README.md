@@ -157,6 +157,10 @@ func main() {
 
 ## Changelog
 
+### 3.1 (2019-10-10)
+* Allow sectioning of IP addresses with "section name" in api
+* Various bugfixes
+
 ### 3.0.1 (2019-10-09)
 
 * Refactored with go mod support

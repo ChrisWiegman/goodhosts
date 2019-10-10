@@ -40,7 +40,7 @@ Flush any changes made to hosts file.
 #### func (Hosts) Has
 
 ```go
-func (h Hosts) Has(ip string, host string) bool
+func (h Hosts) Has(ip string, host string, foreFile bool) bool
 ```
 Return a bool if ip/host combo in hosts file.
 
