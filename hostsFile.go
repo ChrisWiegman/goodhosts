@@ -62,7 +62,9 @@ func (h *Hosts) Load() error {
 			inSection = true
 		}
 
-		fileLines = append(fileLines, line)
+		if !inSection && line.Raw != fmt.Sprintf("%s %s", sectionEnd, h.Section) {
+			fileLines = append(fileLines, line)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -70,12 +72,7 @@ func (h *Hosts) Load() error {
 	}
 
 	h.FileLines = fileLines
-
-	if len(h.Section) > 0 {
-		h.SectionLines = sectionLines
-	} else {
-		h.SectionLines = fileLines
-	}
+	h.SectionLines = sectionLines
 
 	return nil
 }
@@ -83,72 +80,49 @@ func (h *Hosts) Load() error {
 // Flush any changes made to hosts file.
 func (h Hosts) Flush() error {
 
-	//file, err := os.Create(h.Path)
-	//if err != nil {
-	//return err
-	//}
-
-	var writeLines []HostsLine
-
-	if len(h.Section) > 0 {
-
-		var inSection bool
-		var sectionMerged bool
-
-		for _, fileLine := range h.FileLines {
-
-			if fileLine.Raw == fmt.Sprintf("%s %s", sectionEnd, h.Section) {
-				inSection = false
-			}
-
-			if inSection && !sectionMerged {
-				for _, sectionLine := range h.SectionLines {
-					writeLines = append(writeLines, sectionLine)
-				}
-				sectionMerged = true
-			} else if !inSection {
-
-				if len(h.SectionLines) != 0 && (fileLine.Raw != fmt.Sprintf("%s %s", sectionEnd, h.Section) && fileLine.Raw != fmt.Sprintf("%s %s", sectionStart, h.Section)) {
-					writeLines = append(writeLines, fileLine)
-				}
-			}
-
-			if fileLine.Raw == fmt.Sprintf("%s %s", sectionStart, h.Section) {
-				inSection = true
-			}
-		}
-
-		if !sectionMerged && len(h.SectionLines) > 0 {
-			writeLines = append(writeLines, NewHostsLine(eol))
-			writeLines = append(writeLines, NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
-			for _, sectionLine := range h.SectionLines {
-				writeLines = append(writeLines, sectionLine)
-			}
-			writeLines = append(writeLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)))
-			writeLines = append(writeLines, NewHostsLine(eol))
-		}
-
-	} else {
-
-		writeLines = h.FileLines
-
+	file, err := os.Create(h.Path)
+	if err != nil {
+		return err
 	}
 
-	for _, line := range writeLines {
-		fmt.Printf("%s%s", line.Raw, eol)
+	if len(h.SectionLines) > 0 {
+
+		if len(h.Section) > 0 {
+			h.FileLines = append(h.FileLines, NewHostsLine(""))
+			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
+		}
+
+		for _, sectionLine := range h.SectionLines {
+			h.FileLines = append(h.FileLines, sectionLine)
+		}
+
+		if len(h.Section) > 0 {
+			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)))
+			h.FileLines = append(h.FileLines, NewHostsLine(""))
+		}
 	}
-	return nil
 
-	//w := bufio.NewWriter(file)
+	var isBlank bool
+	w := bufio.NewWriter(file)
 
-	//for _, line := range writeLines {
-	//fmt.Fprintf(w, "%s%s", line.Raw, eol)
-	//}
+	for _, line := range h.FileLines {
 
-	//err = w.Flush()
-	//if err != nil {
-	//return err
-	//}
+		if !isBlank || len(line.Raw) > 1 {
+			fmt.Printf("%s%s", line.Raw, eol)
+			fmt.Fprintf(w, "%s%s", line.Raw, eol)
+		}
+
+		if len(line.Raw) < 2 {
+			isBlank = true
+		} else {
+			isBlank = false
+		}
+	}
+
+	err = w.Flush()
+	if err != nil {
+		return err
+	}
 
 	return h.Load()
 }
@@ -162,7 +136,11 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 
 	for _, host := range hosts {
 
-		if !h.Has(ip, host) {
+		if h.Has(ip, host, true) {
+			return fmt.Errorf("%s has already been assigned", host)
+		}
+
+		if !h.Has(ip, host, false) {
 			endLine := NewHostsLine(buildRawLine(ip, host, comment))
 			endLine.Comment = comment
 			h.SectionLines = append(h.SectionLines, endLine)
@@ -173,8 +151,8 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 }
 
 // Has Return a bool if ip/host combo in hosts file.
-func (h *Hosts) Has(ip string, host string) bool {
-	pos := h.getHostPosition(ip, host)
+func (h *Hosts) Has(ip string, host string, forceFile bool) bool {
+	pos := h.getHostPosition(ip, host, forceFile)
 
 	return pos != -1
 }
@@ -182,12 +160,17 @@ func (h *Hosts) Has(ip string, host string) bool {
 // Remove an entry from the hosts file.
 func (h *Hosts) Remove(ip string, hosts ...string) error {
 	var outputLines []HostsLine
+	inputLines := h.SectionLines
+
+	if len(h.Section) == 0 {
+		inputLines = h.FileLines
+	}
 
 	if net.ParseIP(ip) == nil {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
-	for _, line := range h.SectionLines {
+	for _, line := range inputLines {
 
 		// Bad lines or comments just get readded.
 		if line.Err != nil || IsComment(line.Raw) || line.IP != ip {
@@ -219,14 +202,26 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		}
 	}
 
-	h.SectionLines = outputLines
+	if len(h.Section) == 0 {
+		h.FileLines = outputLines
+	} else {
+		h.SectionLines = outputLines
+	}
+
 	return nil
+
 }
 
-func (h Hosts) getHostPosition(ip string, host string) int {
+func (h Hosts) getHostPosition(ip string, host string, forceFile bool) int {
 
-	for i := range h.FileLines {
-		line := h.FileLines[i]
+	checkLines := h.FileLines
+
+	if len(h.Section) > 0 && !forceFile {
+		checkLines = h.SectionLines
+	}
+
+	for i := range checkLines {
+		line := checkLines[i]
 		if !IsComment(line.Raw) && line.Raw != "" {
 			if ip == line.IP && itemInSlice(host, line.Hosts) {
 				return i

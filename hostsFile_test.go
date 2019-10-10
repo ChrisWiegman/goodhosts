@@ -13,12 +13,12 @@ func TestHostsHas(t *testing.T) {
 	}
 
 	// We should find this entry.
-	if !hosts.Has("10.0.0.7", "nada") {
+	if !hosts.Has("10.0.0.7", "nada", false) {
 		t.Error("Couldn't find entry in hosts file.")
 	}
 
 	// We shouldn't find this entry
-	if hosts.Has("10.0.0.7", "shuda") {
+	if hosts.Has("10.0.0.7", "shuda", false) {
 		t.Error("Found entry that isn't in hosts file.")
 	}
 }
@@ -28,7 +28,7 @@ func TestHostsHasDoesntFindMissingEntry(t *testing.T) {
 	hosts.FileLines = []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada")}
 
-	if hosts.Has("10.0.0.7", "brada") {
+	if hosts.Has("10.0.0.7", "brada", false) {
 		t.Error("Found missing entry.")
 	}
 }

@@ -30,9 +30,9 @@ Options:
   -h --help     Show this screen.
   --version     Show the version.`
 
-	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 3.0.1", false)
+	args, _ := docopt.Parse(usage, nil, true, "Goodhosts 3.1", false)
 
-	hosts, err := goodhosts.NewHosts("DevKit2")
+	hosts, err := goodhosts.NewHosts("")
 	check(err)
 
 	if args["list"].(bool) {
@@ -65,7 +65,7 @@ Options:
 		hostEntries := args["<host>"].([]string)
 
 		for _, hostEntry := range hostEntries {
-			if !hosts.Has(ip, hostEntry) {
+			if !hosts.Has(ip, hostEntry, false) {
 				fmt.Fprintln(os.Stderr, fmt.Sprintf("%s %s is not in the hosts file", ip, hostEntry))
 				hasErr = true
 			}
@@ -87,7 +87,7 @@ Options:
 			os.Exit(1)
 		}
 
-		err = hosts.Add(ip, "", hostEntries...)
+		err = hosts.Add(ip, "Test Comment", hostEntries...)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s", err.Error()))
 			os.Exit(2)
