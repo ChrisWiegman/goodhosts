@@ -109,7 +109,6 @@ func (h Hosts) Flush() error {
 	for _, line := range h.FileLines {
 
 		if !isBlank || len(line.Raw) > 1 {
-			fmt.Printf("%s%s", line.Raw, eol)
 			fmt.Fprintf(w, "%s%s", line.Raw, eol)
 		}
 
