@@ -2,6 +2,7 @@ package goodhosts
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -155,6 +156,18 @@ func (h *Hosts) Has(ip string, host string, forceFile bool) bool {
 	pos := h.getHostPosition(ip, host, forceFile)
 
 	return pos != -1
+}
+
+// RemoveSection removes an entire section from the hostsfile
+func (h *Hosts) RemoveSection() error {
+
+	if len(h.Section) == 0 {
+		return errors.New("No section Provided")
+	}
+
+	h.SectionLines = nil
+
+	return nil
 }
 
 // Remove an entry from the hosts file.
