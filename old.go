@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ChrisWiegman/goodhosts/v3"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts"
 	"github.com/docopt/docopt-go"
 )
 
@@ -35,49 +35,6 @@ Options:
 
 	hosts, err := goodhosts.NewHosts("")
 	check(err)
-
-	if args["list"].(bool) {
-		total := 0
-		for _, line := range hosts.FileLines {
-			var lineOutput string
-
-			if goodhosts.IsComment(line.Raw) && !args["--all"].(bool) {
-				continue
-			}
-
-			lineOutput = fmt.Sprintf("%s", line.Raw)
-			if line.Err != nil {
-				lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
-			}
-			total++
-
-			fmt.Println(lineOutput)
-		}
-
-		fmt.Printf("\nTotal: %d\n", total)
-
-		return
-	}
-
-	if args["check"].(bool) {
-		hasErr := false
-
-		ip := args["<ip>"].(string)
-		hostEntries := args["<host>"].([]string)
-
-		for _, hostEntry := range hostEntries {
-			if !hosts.Has(ip, hostEntry, false) {
-				fmt.Fprintln(os.Stderr, fmt.Sprintf("%s %s is not in the hosts file", ip, hostEntry))
-				hasErr = true
-			}
-		}
-
-		if hasErr {
-			os.Exit(1)
-		}
-
-		return
-	}
 
 	if args["add"].(bool) {
 		ip := args["<ip>"].(string)
