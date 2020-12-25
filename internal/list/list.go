@@ -3,11 +3,18 @@ package list
 import (
 	"fmt"
 
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/flags"
 	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/pkg/goodhosts"
+	"github.com/spf13/cobra"
 )
 
 // List lists all the entries in the hosts file
-func List(hosts goodhosts.Hosts) {
+func List(cmd *cobra.Command, args []string) error {
+
+	hosts, err := goodhosts.NewHosts(flags.Section)
+	if err != nil {
+		return err
+	}
 
 	total := 0
 		for _, line := range hosts.FileLines {
@@ -28,5 +35,5 @@ func List(hosts goodhosts.Hosts) {
 
 		fmt.Printf("\nTotal: %d\n", total)
 
-		return
+		return nil
 }

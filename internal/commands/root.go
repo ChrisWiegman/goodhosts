@@ -3,7 +3,7 @@ package commands
 import (
 	"os"
 
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/pkg/goodhosts"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/flags"
 
 	"github.com/spf13/cobra"
 )
@@ -31,15 +31,13 @@ func rootCommand() (*cobra.Command, error) {
 		Args:  cobra.MinimumNArgs(1),
 	}
 
-	hosts, err := goodhosts.NewHosts("")
-	if err != nil {
-		return cmd, err
-	}
+	flags.AddVerboseFlag(cmd)
+	flags.AddSectionFlag(cmd)
 
 	cmd.AddCommand(
-		checkCommand(hosts),
-		listCommand(hosts),
-		addCommand(hosts),
+		checkCommand(),
+		listCommand(),
+		addCommand(),
 	)
 
 	return cmd, nil
