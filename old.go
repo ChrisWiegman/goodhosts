@@ -36,27 +36,6 @@ Options:
 	hosts, err := goodhosts.NewHosts("")
 	check(err)
 
-	if args["rm"].(bool) || args["remove"].(bool) {
-		ip := args["<ip>"].(string)
-		hostEntries := args["<host>"].([]string)
-
-		if !hosts.IsWritable() {
-			fmt.Fprintln(os.Stderr, "Host file not writable. Try running with elevated privileges.")
-			os.Exit(1)
-		}
-
-		err = hosts.Remove(ip, hostEntries...)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", err.Error()))
-			os.Exit(2)
-		}
-
-		err = hosts.Flush()
-		check(err)
-
-		return
-	}
-
 	if args["removesection"].(bool) {
 
 		section := args["<section>"].(string)

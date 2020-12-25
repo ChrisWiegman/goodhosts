@@ -12,6 +12,7 @@ func removeCommand() *cobra.Command {
 		Use:   "remove <ip> <host>...",
 		Short: "Removes an IP/Host combination from the hosts file",
 		RunE: remove.Remove,
+		Args:  cobra.MinimumNArgs(2),
 	}
 
 	return cmd
