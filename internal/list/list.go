@@ -37,4 +37,5 @@ func List(cmd *cobra.Command, args []string) error {
 	fmt.Printf("\nTotal: %d\n", total)
 
 	return nil
+
 }
