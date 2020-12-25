@@ -38,6 +38,7 @@ func rootCommand() (*cobra.Command, error) {
 		checkCommand(),
 		listCommand(),
 		addCommand(),
+		removeCommand(),
 	)
 
 	return cmd, nil

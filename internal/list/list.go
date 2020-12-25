@@ -5,6 +5,7 @@ import (
 
 	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/flags"
 	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/pkg/goodhosts"
+
 	"github.com/spf13/cobra"
 )
 
