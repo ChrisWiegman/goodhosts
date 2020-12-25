@@ -3,7 +3,7 @@ package commands
 import (
 	"os"
 
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/flags"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/flags"
 
 	"github.com/spf13/cobra"
 )

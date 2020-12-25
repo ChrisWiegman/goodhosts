@@ -57,7 +57,7 @@ $ goodhosts rm 127.0.0.1 facebook.com twitter.com gmail.com
 ### Remove an section
 
 ```bash
-$ goodhosts removesection sectionname
+$ goodhosts removesection --section=sectionname
 ```
 
 ### More
@@ -71,7 +71,7 @@ $ goodhosts --help
 ### Installation
 
 ```bash
-$ go get github.com/ChrisWiegman/goodhosts
+$ go get gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4
 ```
 
 ### List entries

@@ -3,8 +3,8 @@ package list
 import (
 	"fmt"
 
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/flags"
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/pkg/goodhosts"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/flags"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 
 	"github.com/spf13/cobra"
 )
@@ -20,7 +20,12 @@ func List(cmd *cobra.Command, args []string) error {
 	total := 0
 
 	for _, line := range hosts.FileLines {
+
 		var lineOutput string
+
+		if line.Raw == "" {
+			continue
+		}
 
 		if goodhosts.IsComment(line.Raw) && !flags.AllLines {
 			continue
@@ -30,12 +35,16 @@ func List(cmd *cobra.Command, args []string) error {
 		if line.Err != nil {
 			lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
 		}
-		total++
+
+		if !goodhosts.IsComment(line.Raw) {
+			total++
+		}
 
 		fmt.Println(lineOutput)
 	}
 
-	fmt.Printf("\nTotal: %d\n", total)
+	fmt.Println("") // Add a blank line
+	fmt.Println(fmt.Sprintf("Total Host Entries: %d", total))
 
 	return nil
 

@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/internal/check"
+	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/check"
 
 	"github.com/spf13/cobra"
 )
