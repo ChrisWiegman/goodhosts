@@ -17,23 +17,24 @@ func List(cmd *cobra.Command, args []string) error {
 	}
 
 	total := 0
-		for _, line := range hosts.FileLines {
-			var lineOutput string
 
-			if goodhosts.IsComment(line.Raw) {
-				continue
-			}
+	for _, line := range hosts.FileLines {
+		var lineOutput string
 
-			lineOutput = fmt.Sprintf("%s", line.Raw)
-			if line.Err != nil {
-				lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
-			}
-			total++
-
-			fmt.Println(lineOutput)
+		if goodhosts.IsComment(line.Raw) && !flags.AllLines {
+			continue
 		}
 
-		fmt.Printf("\nTotal: %d\n", total)
+		lineOutput = fmt.Sprintf("%s", line.Raw)
+		if line.Err != nil {
+			lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
+		}
+		total++
 
-		return nil
+		fmt.Println(lineOutput)
+	}
+
+	fmt.Printf("\nTotal: %d\n", total)
+
+	return nil
 }

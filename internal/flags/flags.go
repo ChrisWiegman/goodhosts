@@ -2,6 +2,9 @@ package flags
 
 import "github.com/spf13/cobra"
 
+// AllLines Set to true to display comments when listing
+var AllLines bool
+
 // Comment Adds a comment to the entry for better identification later
 var Comment string
 
@@ -10,6 +13,11 @@ var Section string
 
 // Verbose Set to true for verbose output on a given command.
 var Verbose bool
+
+// AddAllLinesFlag Adds the all flag to a cobra command.
+func AddAllLinesFlag(command *cobra.Command) {
+	command.PersistentFlags().BoolVar(&AllLines, "all", false, "Display comments when listing.")
+}
 
 // AddCommentFlag Adds the comment flag to a cobra command.
 func AddCommentFlag(command *cobra.Command) {
