@@ -1,8 +1,6 @@
 # Goodhosts
 
-[![Build Status](https://travis-ci.org/ChrisWiegman/goodhosts.svg?branch=master)](https://travis-ci.org/ChrisWiegman/goodhosts)
-
-This is a fork of [https://github.com/lextoumbourou/goodhosts] as we needed a bit deeper management.
+This is a fork of [https://github.com/lextoumbourou/goodhosts] as I desired more organization of hosts entries than the original could provide.
 
 Simple [hosts file](http://en.wikipedia.org/wiki/Hosts_%28file%29) (```/etc/hosts```) management in Go (golang).
 
@@ -27,31 +25,31 @@ Add ```--all``` flag to include comments.
 ### Check for an entry
 
 ```bash
-$ goodhosts check 127.0.0.1 facebook.com
+$ goodhosts check 127.0.0.1 hiroy.club
 ```
 
 ### Add an entry
 
 ```bash
-$ goodhosts add 127.0.0.1 facebook.com
+$ goodhosts add 127.0.0.1 hiroy.club
 ```
 
 Or *entries*.
 
 ```bash
-$ goodhosts add 127.0.0.1 facebook.com twitter.com gmail.com
+$ goodhosts add 127.0.0.1 hiroy.club gitea.io notochrome.org
 ```
 
 ### Remove an entry
 
 ```bash
-$ goodhosts rm 127.0.0.1 facebook.com
+$ goodhosts rm 127.0.0.1 hiroy.club
 ```
 
 Or *entries*.
 
 ```bash
-$ goodhosts rm 127.0.0.1 facebook.com twitter.com gmail.com
+$ goodhosts rm 127.0.0.1 hiroy.club gitea.io notochrome.org
 ```
 
 ### Remove an section
@@ -81,7 +79,7 @@ package main
 
 import (
     "fmt"
-    "github.com/ChrisWiegman/goodhosts"
+    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
@@ -100,13 +98,13 @@ package main
 
 import (
     "fmt"
-    "github.com/ChrisWiegman/goodhosts"
+    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
     hosts := goodhosts.NewHosts("")
 
-    if hosts.Has("127.0.0.1", "facebook.com", true) {
+    if hosts.Has("127.0.0.1", "hiroy.club", true) {
         fmt.Println("Entry exists!")
         return
     }
@@ -122,14 +120,14 @@ package main
 
 import (
     "fmt"
-    "github.com/ChrisWiegman/goodhosts"
+    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
     hosts := goodhosts.NewHosts("")
 
     // Note that nothing will be added to the hosts file until ``hosts.Flush`` is called.
-    hosts.Add("127.0.0.1", "This is a line comment", "facebook.com", "twitter.com")
+    hosts.Add("127.0.0.1", "This is a line comment", "hiroy.club", "notochrome.org")
 
     if err := hosts.Flush(); err != nil {
         panic(err)
@@ -144,14 +142,14 @@ package main
 
 import (
     "fmt"
-    "github.com/ChrisWiegman/goodhosts"
+    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
     hosts := goodhosts.NewHosts("")
 
     // Same deal, yo: call hosts.Flush() to make permanent.
-    hosts.Remove("127.0.0.1", "facebook.com", "twitter.com")
+    hosts.Remove("127.0.0.1", "hiroy.club", "notochrome.org")
 
     if err := hosts.Flush(); err != nil {
         panic(err)
@@ -162,6 +160,14 @@ func main() {
 ### [More](API.md)
 
 ## Changelog
+
+### 4.0.0 (2020-12-26)
+
+* Complete refactor
+* Now uses proper gitea domain
+* Use Cobra for command line items
+* Implement all section features in CLI
+* Cleanup API
 
 ### 3.2 (2019-10-10)
 
