@@ -21,7 +21,7 @@ Represents a hosts file.
 #### func  NewHosts
 
 ```go
-func NewHosts("") (Hosts, error)
+func NewHosts(sectionName string) (Hosts, error)
 ```
 Return a new instance of ``Hosts``.
 
