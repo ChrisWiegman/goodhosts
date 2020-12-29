@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/flags"
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/list"
+	"github.com/ChrisWiegman/goodhosts/v4/internal/flags"
+	"github.com/ChrisWiegman/goodhosts/v4/internal/list"
 
 	"github.com/spf13/cobra"
 )

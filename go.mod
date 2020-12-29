@@ -1,4 +1,4 @@
-module gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4
+module github.com/ChrisWiegman/goodhosts/v4
 
 go 1.15
 

@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/removesection"
+	"github.com/ChrisWiegman/goodhosts/v4/internal/removesection"
 
 	"github.com/spf13/cobra"
 )

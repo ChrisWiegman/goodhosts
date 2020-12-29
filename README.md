@@ -69,7 +69,7 @@ $ goodhosts --help
 ### Installation
 
 ```bash
-$ go get gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4
+$ go get github.com/ChrisWiegman/goodhosts/v4
 ```
 
 ### List entries
@@ -79,7 +79,7 @@ package main
 
 import (
     "fmt"
-    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
+    "github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
@@ -98,7 +98,7 @@ package main
 
 import (
     "fmt"
-    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
+    "github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
@@ -120,7 +120,7 @@ package main
 
 import (
     "fmt"
-    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
+    "github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {
@@ -142,7 +142,7 @@ package main
 
 import (
     "fmt"
-    "gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
+    "github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 )
 
 func main() {

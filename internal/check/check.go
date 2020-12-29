@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/internal/flags"
-	"gitea.chriswiegman.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
+	"github.com/ChrisWiegman/goodhosts/v4/internal/flags"
+	"github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 
 	"github.com/spf13/cobra"
 )
