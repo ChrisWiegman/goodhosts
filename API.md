@@ -1,6 +1,6 @@
 # goodhosts
 --
-    import "github.com/lextoumbourou/goodhosts"
+    import "github.com/ChrisWiegman/goodhosts/v4/pkg/goodhosts"
 
 
 ## Usage
