@@ -161,7 +161,7 @@ func main() {
 
 ## Changelog
 
-### 4.0.0 (2020-12-26)
+### 4.0.0 (2020-12-29)
 
 * Complete refactor
 * Now uses proper gitea domain
