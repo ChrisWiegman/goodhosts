@@ -10,18 +10,15 @@ import (
 
 // Execute Runs the kana command.
 func Execute() {
-	cmd, err := rootCommand()
-	if err != nil {
-		os.Exit(1)
-	}
+	cmd := rootCommand()
 
-	err = cmd.Execute()
+	err := cmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
-func rootCommand() (*cobra.Command, error) {
+func rootCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "goodhosts [command]",
 		Short: "Simple hosts file management.",
@@ -40,5 +37,5 @@ func rootCommand() (*cobra.Command, error) {
 		removeSectionCommand(),
 	)
 
-	return cmd, nil
+	return cmd
 }

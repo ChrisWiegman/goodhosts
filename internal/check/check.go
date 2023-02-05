@@ -24,7 +24,7 @@ func Check(cmd *cobra.Command, args []string) error {
 
 	for _, hostEntry := range hostEntries {
 		if !hosts.Has(ip, hostEntry, false) {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s %s is not in the hosts file", ip, hostEntry))
+			fmt.Fprintf(os.Stderr, "%s %s is not in the hosts file", ip, hostEntry)
 			hasErr = true
 		}
 	}

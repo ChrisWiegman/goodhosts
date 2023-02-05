@@ -12,7 +12,6 @@ import (
 
 // RemoveSection deletes a section from the hosts file
 func RemoveSection(cmd *cobra.Command, args []string) error {
-
 	if flags.Section == "" {
 		return errors.New("you must provide the `--section` flag to use this command")
 	}
@@ -32,5 +31,4 @@ func RemoveSection(cmd *cobra.Command, args []string) error {
 	}
 
 	return hosts.Flush()
-
 }

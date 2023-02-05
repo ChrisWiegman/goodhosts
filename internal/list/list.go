@@ -19,7 +19,6 @@ func List(cmd *cobra.Command, args []string) error {
 	total := 0
 
 	for _, line := range hosts.FileLines {
-
 		var lineOutput string
 
 		if line.Raw == "" {
@@ -30,7 +29,7 @@ func List(cmd *cobra.Command, args []string) error {
 			continue
 		}
 
-		lineOutput = fmt.Sprintf("%s", line.Raw)
+		lineOutput = line.Raw
 		if line.Err != nil {
 			lineOutput = fmt.Sprintf("%s # <<< Malformated!", lineOutput)
 		}
@@ -42,8 +41,7 @@ func List(cmd *cobra.Command, args []string) error {
 		fmt.Println(lineOutput)
 	}
 
-	fmt.Println("") // Add a blank line
-	fmt.Println(fmt.Sprintf("Total Host Entries: %d", total))
+	fmt.Printf("\nTotal Host Entries: %d\n", total)
 
 	return nil
 }
