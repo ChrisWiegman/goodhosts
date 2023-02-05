@@ -6,14 +6,13 @@ import (
 )
 
 func TestHostsLineIsComment(t *testing.T) {
-
 	comment := "   # This is a comment   "
 	line := NewHostsLine(comment)
 
 	result := IsComment(line.Raw)
 
 	if !result {
-		t.Error(fmt.Sprintf("'%s' should be a comment", comment))
+		t.Error(fmt.Errorf("'%s' should be a comment", comment))
 	}
 }
 

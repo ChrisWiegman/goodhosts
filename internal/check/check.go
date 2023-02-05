@@ -11,8 +11,7 @@ import (
 )
 
 // Check checks the hosts file that the provided hosts are assigned to the ip
-func Check(cmd *cobra.Command, args []string)  error {
-
+func Check(cmd *cobra.Command, args []string) error {
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {
 		return err
@@ -24,12 +23,9 @@ func Check(cmd *cobra.Command, args []string)  error {
 	hostEntries := args[1:]
 
 	for _, hostEntry := range hostEntries {
-
 		if !hosts.Has(ip, hostEntry, false) {
-
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("%s %s is not in the hosts file", ip, hostEntry))
 			hasErr = true
-
 		}
 	}
 
@@ -38,5 +34,4 @@ func Check(cmd *cobra.Command, args []string)  error {
 	}
 
 	return nil
-
 }

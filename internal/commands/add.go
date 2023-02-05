@@ -8,16 +8,14 @@ import (
 )
 
 func addCommand() *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "add <ip> <host>...",
 		Short: "Add an IP and host to the hosts file",
-		RunE: add.Add,
+		RunE:  add.Add,
 		Args:  cobra.MinimumNArgs(2),
 	}
 
 	flags.AddCommentFlag(cmd)
 
 	return cmd
-
 }

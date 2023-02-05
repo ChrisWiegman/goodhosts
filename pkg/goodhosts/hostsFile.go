@@ -22,11 +22,11 @@ type Hosts struct {
 // IsWritable Return ```true``` if hosts file is writable.
 func (h *Hosts) IsWritable() bool {
 	_, err := os.OpenFile(h.Path, os.O_WRONLY, 0660)
-	if err != nil {
-		return false
+	if err == nil {
+		return true
 	}
 
-	return true
+	return false
 }
 
 // Load the hosts file into ```l.Lines```.
@@ -45,7 +45,6 @@ func (h *Hosts) Load() error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-
 		line := NewHostsLine(scanner.Text())
 		if err != nil {
 			return err
@@ -80,22 +79,18 @@ func (h *Hosts) Load() error {
 
 // Flush any changes made to hosts file.
 func (h Hosts) Flush() error {
-
 	file, err := os.Create(h.Path)
 	if err != nil {
 		return err
 	}
 
 	if len(h.SectionLines) > 0 {
-
 		if len(h.Section) > 0 {
 			h.FileLines = append(h.FileLines, NewHostsLine(""))
 			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
 		}
 
-		for _, sectionLine := range h.SectionLines {
-			h.FileLines = append(h.FileLines, sectionLine)
-		}
+		h.FileLines = append(h.FileLines, h.SectionLines...)
 
 		if len(h.Section) > 0 {
 			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)))
@@ -107,7 +102,6 @@ func (h Hosts) Flush() error {
 	w := bufio.NewWriter(file)
 
 	for _, line := range h.FileLines {
-
 		if !isBlank || len(line.Raw) > 1 {
 			fmt.Fprintf(w, "%s%s", line.Raw, eol)
 		}
@@ -129,13 +123,11 @@ func (h Hosts) Flush() error {
 
 // Add an entry to the hosts file.
 func (h *Hosts) Add(ip, comment string, hosts ...string) error {
-
 	if net.ParseIP(ip) == nil {
 		return fmt.Errorf("%q is an invalid IP address", ip)
 	}
 
 	for _, host := range hosts {
-
 		if h.Has(ip, host, true) {
 			return fmt.Errorf("%s has already been assigned", host)
 		}
@@ -151,7 +143,7 @@ func (h *Hosts) Add(ip, comment string, hosts ...string) error {
 }
 
 // Has Return a bool if ip/host combo in hosts file.
-func (h *Hosts) Has(ip string, host string, forceFile bool) bool {
+func (h *Hosts) Has(ip, host string, forceFile bool) bool {
 	pos := h.getHostPosition(ip, host, forceFile)
 
 	return pos != -1
@@ -159,9 +151,8 @@ func (h *Hosts) Has(ip string, host string, forceFile bool) bool {
 
 // RemoveSection removes an entire section from the hostsfile
 func (h *Hosts) RemoveSection() error {
-
-	if len(h.Section) == 0 {
-		return errors.New("No section Provided")
+	if h.Section == "" {
+		return errors.New("no section provided")
 	}
 
 	h.SectionLines = nil
@@ -174,7 +165,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 	var outputLines []HostsLine
 	inputLines := h.SectionLines
 
-	if len(h.Section) == 0 {
+	if h.Section == "" {
 		inputLines = h.FileLines
 	}
 
@@ -183,8 +174,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 	}
 
 	for _, line := range inputLines {
-
-		// Bad lines or comments just get readded.
+		// Bad lines or comments just get re-added.
 		if line.Err != nil || IsComment(line.Raw) || line.IP != ip {
 			outputLines = append(outputLines, line)
 			continue
@@ -214,18 +204,16 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 		}
 	}
 
-	if len(h.Section) == 0 {
+	if h.Section == "" {
 		h.FileLines = outputLines
 	} else {
 		h.SectionLines = outputLines
 	}
 
 	return nil
-
 }
 
-func (h Hosts) getHostPosition(ip string, host string, forceFile bool) int {
-
+func (h *Hosts) getHostPosition(ip, host string, forceFile bool) int {
 	checkLines := h.FileLines
 
 	if len(h.Section) > 0 && !forceFile {
@@ -236,19 +224,6 @@ func (h Hosts) getHostPosition(ip string, host string, forceFile bool) int {
 		line := checkLines[i]
 		if !IsComment(line.Raw) && line.Raw != "" {
 			if ip == line.IP && itemInSlice(host, line.Hosts) {
-				return i
-			}
-		}
-	}
-
-	return -1
-}
-
-func (h Hosts) getIPPosition(ip string) int {
-	for i := range h.FileLines {
-		line := h.FileLines[i]
-		if !IsComment(line.Raw) && line.Raw != "" {
-			if line.IP == ip {
 				return i
 			}
 		}

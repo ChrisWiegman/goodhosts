@@ -7,7 +7,6 @@ import (
 
 // intemInSlice Returns true if the item string is in the provided slice or false
 func itemInSlice(item string, list []string) bool {
-
 	for _, i := range list {
 		if i == item {
 			return true
@@ -15,12 +14,10 @@ func itemInSlice(item string, list []string) bool {
 	}
 
 	return false
-
 }
 
 // buildRawLine builds a line for insertion into the hosts file
-func buildRawLine(ip string, host, comment string) string {
-
+func buildRawLine(ip, host, comment string) string {
 	output := ip
 
 	output = fmt.Sprintf("%s %s", output, host)

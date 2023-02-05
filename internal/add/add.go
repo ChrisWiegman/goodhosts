@@ -12,7 +12,6 @@ import (
 
 // Add checks the hosts file that the provided hosts are assigned to the ip
 func Add(cmd *cobra.Command, args []string) error {
-
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {
 		return err
@@ -31,5 +30,4 @@ func Add(cmd *cobra.Command, args []string) error {
 	}
 
 	return hosts.Flush()
-
 }

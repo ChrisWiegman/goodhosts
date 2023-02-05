@@ -8,15 +8,13 @@ import (
 )
 
 func listCommand() *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "list [-all]",
 		Short: "List all the hosts in the host file",
-		RunE: list.List,
+		RunE:  list.List,
 	}
 
 	flags.AddAllLinesFlag(cmd)
 
 	return cmd
-
 }

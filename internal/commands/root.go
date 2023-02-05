@@ -10,7 +10,6 @@ import (
 
 // Execute Runs the kana command.
 func Execute() {
-
 	cmd, err := rootCommand()
 	if err != nil {
 		os.Exit(1)
@@ -23,7 +22,6 @@ func Execute() {
 }
 
 func rootCommand() (*cobra.Command, error) {
-
 	cmd := &cobra.Command{
 		Use:   "goodhosts [command]",
 		Short: "Simple hosts file management.",
@@ -43,5 +41,4 @@ func rootCommand() (*cobra.Command, error) {
 	)
 
 	return cmd, nil
-
 }

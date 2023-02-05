@@ -12,7 +12,6 @@ import (
 
 // Remove deletes a host/ip entry
 func Remove(cmd *cobra.Command, args []string) error {
-
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {
 		return err
@@ -31,5 +30,4 @@ func Remove(cmd *cobra.Command, args []string) error {
 	}
 
 	return hosts.Flush()
-
 }

@@ -17,8 +17,8 @@ type HostsLine struct {
 
 // NewHostsLine Return a new instance of ```HostsLine```.
 func NewHostsLine(raw string) HostsLine {
-
 	fields := strings.Fields(raw)
+
 	if len(fields) == 0 {
 		return HostsLine{Raw: raw}
 	}
@@ -26,10 +26,9 @@ func NewHostsLine(raw string) HostsLine {
 	output := HostsLine{Raw: raw}
 
 	if !IsComment(output.Raw) {
-
 		rawIP := fields[0]
 		if net.ParseIP(rawIP) == nil {
-			output.Err = fmt.Errorf("Bad hosts line: %q", raw)
+			output.Err = fmt.Errorf("bad hosts line: %q", raw)
 		}
 
 		output.IP = rawIP
@@ -45,9 +44,7 @@ func NewHostsLine(raw string) HostsLine {
 		}
 
 		output.Hosts = outputFields[1:]
-
 	}
 
 	return output
-
 }

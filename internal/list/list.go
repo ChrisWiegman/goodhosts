@@ -11,7 +11,6 @@ import (
 
 // List lists all the entries in the hosts file
 func List(cmd *cobra.Command, args []string) error {
-
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {
 		return err
@@ -47,5 +46,4 @@ func List(cmd *cobra.Command, args []string) error {
 	fmt.Println(fmt.Sprintf("Total Host Entries: %d", total))
 
 	return nil
-
 }
