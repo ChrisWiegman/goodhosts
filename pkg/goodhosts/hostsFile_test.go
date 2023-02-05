@@ -1,8 +1,9 @@
 package goodhosts
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHostsHas(t *testing.T) {
@@ -40,10 +41,13 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 		NewHostsLine("10.0.0.7 nada"),
 	}
 
-	hosts.Add("10.0.0.7", "", "brada")
-	hosts.Add("127.0.0.1", "", "yadda")
+	err := hosts.Add("10.0.0.7", "", "brada")
+	assert.NoError(t, err)
 
-	checkLines := append(hosts.FileLines, hosts.SectionLines...)
+	err = hosts.Add("127.0.0.1", "", "yadda")
+	assert.Error(t, err)
+
+	hosts.FileLines = append(hosts.FileLines, hosts.SectionLines...)
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
@@ -51,9 +55,7 @@ func TestHostsAddWhenIpHasOtherHosts(t *testing.T) {
 		NewHostsLine("10.0.0.7 brada"),
 	}
 
-	if !reflect.DeepEqual(checkLines, expectedLines) {
-		t.Error("Add entry failed to append entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
 
 func TestHostsAddWithComment(t *testing.T) {
@@ -63,9 +65,10 @@ func TestHostsAddWithComment(t *testing.T) {
 		NewHostsLine("10.0.0.7 nada"),
 	}
 
-	hosts.Add("10.0.0.7", "Test Comment", "brada", "yadda")
+	err := hosts.Add("10.0.0.7", "Test Comment", "brada", "yadda")
+	assert.NoError(t, err)
 
-	checkLines := append(hosts.FileLines, hosts.SectionLines...)
+	hosts.FileLines = append(hosts.FileLines, hosts.SectionLines...)
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
@@ -74,9 +77,7 @@ func TestHostsAddWithComment(t *testing.T) {
 		NewHostsLine("10.0.0.7 yadda #Test Comment"),
 	}
 
-	if !reflect.DeepEqual(checkLines, expectedLines) {
-		t.Error("Add entry failed to append entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
 
 func TestHostsAddWhenIpDoesntExist(t *testing.T) {
@@ -85,9 +86,10 @@ func TestHostsAddWhenIpDoesntExist(t *testing.T) {
 		NewHostsLine("127.0.0.1 yadda"),
 	}
 
-	hosts.Add("10.0.0.7", "", "brada", "yadda")
+	err := hosts.Add("10.0.0.7", "", "brada", "yadda")
+	assert.NoError(t, err)
 
-	checkLines := append(hosts.FileLines, hosts.SectionLines...)
+	hosts.FileLines = append(hosts.FileLines, hosts.SectionLines...)
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
@@ -95,9 +97,7 @@ func TestHostsAddWhenIpDoesntExist(t *testing.T) {
 		NewHostsLine("10.0.0.7 yadda"),
 	}
 
-	if !reflect.DeepEqual(checkLines, expectedLines) {
-		t.Error("Add entry failed to append entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
 
 func TestHostsRemoveWhenLastHostIpCombo(t *testing.T) {
@@ -105,29 +105,29 @@ func TestHostsRemoveWhenLastHostIpCombo(t *testing.T) {
 	hosts.FileLines = []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada")}
 
-	hosts.Remove("10.0.0.7", "nada")
+	err := hosts.Remove("10.0.0.7", "nada")
+	assert.NoError(t, err)
 
 	expectedLines := []HostsLine{NewHostsLine("127.0.0.1 yadda")}
 
-	if !reflect.DeepEqual(hosts.FileLines, expectedLines) {
-		t.Error("Remove entry failed to remove entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
 
 func TestHostsRemoveWhenIpHasOtherHosts(t *testing.T) {
 	hosts := new(Hosts)
 
 	hosts.FileLines = []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 nada brada")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 nada brada")}
 
-	hosts.Remove("10.0.0.7", "nada")
+	err := hosts.Remove("10.0.0.7", "nada")
+	assert.NoError(t, err)
 
 	expectedLines := []HostsLine{
-		NewHostsLine("127.0.0.1 yadda"), NewHostsLine("10.0.0.7 brada")}
+		NewHostsLine("127.0.0.1 yadda"),
+		NewHostsLine("10.0.0.7 brada")}
 
-	if !reflect.DeepEqual(hosts.FileLines, expectedLines) {
-		t.Error("Remove entry failed to remove entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
 
 func TestHostsRemoveMultipleEntries(t *testing.T) {
@@ -135,7 +135,9 @@ func TestHostsRemoveMultipleEntries(t *testing.T) {
 	hosts.FileLines = []HostsLine{
 		NewHostsLine("127.0.0.1 yadda nadda prada")}
 
-	hosts.Remove("127.0.0.1", "yadda", "prada")
+	err := hosts.Remove("127.0.0.1", "yadda", "prada")
+	assert.NoError(t, err)
+
 	if hosts.FileLines[0].Raw != "127.0.0.1 nadda" {
 		t.Error("Failed to remove multiple entries.")
 	}
@@ -154,14 +156,13 @@ func TestHostsRemoveLineWithComments(t *testing.T) {
 
 	hosts.FileLines = append(hosts.FileLines, nadaLine)
 
-	hosts.Remove("10.0.0.7", "nada")
+	err := hosts.Remove("10.0.0.7", "nada")
+	assert.NoError(t, err)
 
 	expectedLines := []HostsLine{
 		NewHostsLine("127.0.0.1 yadda"),
 		NewHostsLine("10.0.0.7 brada"),
 	}
 
-	if !reflect.DeepEqual(hosts.FileLines, expectedLines) {
-		t.Error("Remove entry failed to remove entry.")
-	}
+	assert.Equal(t, hosts.FileLines, expectedLines)
 }
