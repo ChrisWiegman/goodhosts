@@ -1,27 +1,43 @@
-.PHONY: build
-build: install
+PKG       := github.com/ChrisWiegman/goodhosts
+VERSION   := $(shell git describe --tags || echo "0.0.1")
+TIMESTAMP := $(shell date -u '+%Y-%m-%d_%I:%M:%S%p')
+ARGS = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
+
+.PHONY: clean
+clean:
+	rm -rf \
+		dist \
+		vendor
 
 .PHONY: install
 install:
-	go install ./cmd/...
+	go mod vendor
+	go install \
+		-ldflags "-s -w -X $(PKG)/internal/cmd.Version=$(VERSION) -X $(PKG)/internal/cmd.Timestamp=$(TIMESTAMP)" \
+		./cmd/...
+
+.PHONY: lint
+lint:
+	docker \
+		run \
+		-t \
+		--rm \
+		-v $(PWD):/app \
+		-w /app \
+		golangci/golangci-lint:latest \
+		golangci-lint \
+			run \
+			-v \
+			./...
 
 .PHONY: run
 run:
 	go run ./cmd/...
 
 .PHONY: test
-test: test-lint test-unit
-
-.PHONY: test-lint
-test-lint:
-	/bin/sh -c ' \
-		gofmt -l ./cmd/ ./pkg/ \
-	'
-
-.PHONY: test-unit
-test-unit:
-	/bin/sh -c ' \
-		CGO_ENABLED=0 go test \
-		-installsuffix "static" \
-		./cmd/... ./pkg/... \
-	'
+test:
+	go \
+		test \
+		-timeout 30s\
+		-cover \
+		./...
