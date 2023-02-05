@@ -28,15 +28,12 @@ func buildRawLine(ip, host, comment string) string {
 	}
 
 	return output
-
 }
 
 // IsComment Return ```true``` if the line is a comment.
 func IsComment(line string) bool {
-
 	trimLine := strings.TrimSpace(line)
 	isComment := strings.HasPrefix(trimLine, commentChar)
 
 	return isComment
-
 }

@@ -17,7 +17,6 @@ func TestHostsLineIsComment(t *testing.T) {
 }
 
 func TestNewHostsLineWithEmptyLine(t *testing.T) {
-
 	line := NewHostsLine("")
 
 	if line.Raw != "" {

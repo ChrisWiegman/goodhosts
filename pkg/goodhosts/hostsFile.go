@@ -19,14 +19,12 @@ type Hosts struct {
 	SectionLines []HostsLine
 }
 
+var defaultFilePermissions = 660
+
 // IsWritable Return ```true``` if hosts file is writable.
 func (h *Hosts) IsWritable() bool {
-	_, err := os.OpenFile(h.Path, os.O_WRONLY, 0660)
-	if err == nil {
-		return true
-	}
-
-	return false
+	_, err := os.OpenFile(h.Path, os.O_WRONLY, os.FileMode(defaultFilePermissions))
+	return err == nil
 }
 
 // Load the hosts file into ```l.Lines```.
@@ -78,7 +76,7 @@ func (h *Hosts) Load() error {
 }
 
 // Flush any changes made to hosts file.
-func (h Hosts) Flush() error {
+func (h *Hosts) Flush() error {
 	file, err := os.Create(h.Path)
 	if err != nil {
 		return err
@@ -86,15 +84,13 @@ func (h Hosts) Flush() error {
 
 	if len(h.SectionLines) > 0 {
 		if len(h.Section) > 0 {
-			h.FileLines = append(h.FileLines, NewHostsLine(""))
-			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
+			h.FileLines = append(h.FileLines, NewHostsLine(""), NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
 		}
 
 		h.FileLines = append(h.FileLines, h.SectionLines...)
 
 		if len(h.Section) > 0 {
-			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)))
-			h.FileLines = append(h.FileLines, NewHostsLine(""))
+			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)), NewHostsLine(""))
 		}
 	}
 
