@@ -1,4 +1,4 @@
-PKG       := github.com/ChrisWiegman/goodhosts
+PKG       := github.com/ChrisWiegman/goodhosts/v4
 VERSION   := $(shell git describe --tags || echo "0.0.1")
 TIMESTAMP := $(shell date -u '+%Y-%m-%d_%I:%M:%S%p')
 ARGS = `arg="$(filter-out $@,$(MAKECMDGOALS))" && echo $${arg:-${1}}`
@@ -43,7 +43,7 @@ clean:
 install:
 	go mod vendor
 	go install \
-		-ldflags "-s -w -X $(PKG)/internal/cmd.Version=$(VERSION) -X $(PKG)/internal/cmd.Timestamp=$(TIMESTAMP)" \
+		-ldflags "-s -w -X $(PKG)/internal/commands.Version=$(VERSION) -X $(PKG)/internal/commands.Timestamp=$(TIMESTAMP)" \
 		./cmd/...
 
 .PHONY: lint

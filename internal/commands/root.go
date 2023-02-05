@@ -35,6 +35,7 @@ func rootCommand() *cobra.Command {
 		addCommand(),
 		removeCommand(),
 		removeSectionCommand(),
+		newVersionCommand(),
 	)
 
 	return cmd

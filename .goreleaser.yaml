@@ -14,7 +14,7 @@ builds:
     main: ./cmd/kana/main.go
     binary: kana
     ldflags:
-      - -s -w -X github.com/ChrisWiegman/goodhosts/internal/cmd.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/internal/cmd.Timestamp={{.Date}}
+      - -s -w -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Timestamp={{.Date}}
   - id: linux
     goos:
       - linux
@@ -23,7 +23,7 @@ builds:
     main: ./cmd/kana/main.go
     binary: kana
     ldflags:
-      - -s -w -X github.com/ChrisWiegman/goodhosts/internal/cmd.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/internal/cmd.Timestamp={{.Date}}
+      - -s -w -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Timestamp={{.Date}}
 
 archives:
   - id: macos
@@ -60,3 +60,15 @@ nfpms:
       - deb
       - rpm
       - archlinux
+
+brews:
+  - tap:
+      owner: ChrisWiegman
+      name: homebrew-goodhosts
+      branch: main
+    name: goodhosts
+    license: MIT license
+    test: |
+      system "#{bin}/goodhosts version"
+    homepage: https://github.com/ChrisWiegman/goodhosts
+    description: A utility for editing your hosts file with single entries or blocks of entries.
