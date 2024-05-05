@@ -1,12 +1,4 @@
 linters-settings:
-  depguard:
-    list-type: denylist
-    packages:
-      # logging is allowed only by logutils.Log, logrus
-      # is allowed to use only in logutils package
-      - github.com/sirupsen/logrus
-    packages-with-error-message:
-      - github.com/sirupsen/logrus: "logging is allowed only by logutils.Log"
   dupl:
     threshold: 100
   funlen:
@@ -30,8 +22,8 @@ linters-settings:
   gocyclo:
     min-complexity: 15
   goimports:
-    local-prefixes: github.com/golangci/golangci-lint
-  gomnd:
+    local-prefixes: github.com/ChrisWiegman/goodhosts
+  mnd:
     # don't include the "operation" and "assign"
     checks:
       - argument
@@ -47,7 +39,7 @@ linters-settings:
       - strings.SplitN
 
   govet:
-    check-shadowing: true
+    shadow: true
     settings:
       printf:
         funcs:
@@ -79,7 +71,7 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - gomnd
+    - mnd
     - goprintffuncname
     - gosec
     - gosimple
@@ -97,23 +89,19 @@ linters:
     - unused
     - whitespace
     - noctx
-
-  # don't enable:
-  # - asciicheck
-  # - depguard
-  # - scopelint
-  # - gochecknoglobals
-  # - gocognit
-  # - godot
-  # - godox
-  # - goerr113
-  # - interfacer
-  # - maligned
-  # - nestif
-  # - prealloc
-  # - testpackage
-  # - revive
-  # - wsl
+    - asciicheck
+    - godot
+    - godox
+    - prealloc
+    - bidichk
+    - containedctx
+    - contextcheck
+    - decorder
+    - predeclared
+    - reassign
+    - rowserrcheck
+    - usestdlibvars
+    - wastedassign
 
 run:
   timeout: 5m
