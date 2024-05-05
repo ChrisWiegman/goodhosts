@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Check checks the hosts file that the provided hosts are assigned to the ip
+// Check checks the hosts file that the provided hosts are assigned to the ip.
 func Check(cmd *cobra.Command, args []string) error {
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {

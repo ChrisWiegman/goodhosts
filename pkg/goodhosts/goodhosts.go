@@ -7,7 +7,7 @@ import (
 
 // NewHosts Return a new instance of “Hosts“.
 func NewHosts(sectionName string) (Hosts, error) {
-	osHostsFilePath := ""
+	var osHostsFilePath string
 
 	if os.Getenv("HOSTS_PATH") == "" {
 		osHostsFilePath = os.ExpandEnv(filepath.FromSlash(hostsFilePath))

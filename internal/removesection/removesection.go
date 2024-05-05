@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RemoveSection deletes a section from the hosts file
+// RemoveSection deletes a section from the hosts file.
 func RemoveSection(cmd *cobra.Command, args []string) error {
 	if flags.Section == "" {
 		return errors.New("you must provide the `--section` flag to use this command")

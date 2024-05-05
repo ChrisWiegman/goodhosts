@@ -83,13 +83,13 @@ func (h *Hosts) Flush() error {
 	}
 
 	if len(h.SectionLines) > 0 {
-		if len(h.Section) > 0 {
+		if h.Section != "" {
 			h.FileLines = append(h.FileLines, NewHostsLine(""), NewHostsLine(fmt.Sprintf("%s %s", sectionStart, h.Section)))
 		}
 
 		h.FileLines = append(h.FileLines, h.SectionLines...)
 
-		if len(h.Section) > 0 {
+		if h.Section != "" {
 			h.FileLines = append(h.FileLines, NewHostsLine(fmt.Sprintf("%s %s", sectionEnd, h.Section)), NewHostsLine(""))
 		}
 	}
@@ -145,7 +145,7 @@ func (h *Hosts) Has(ip, host string, forceFile bool) bool {
 	return pos != -1
 }
 
-// RemoveSection removes an entire section from the hostsfile
+// RemoveSection removes an entire section from the hostsfile.
 func (h *Hosts) RemoveSection() error {
 	if h.Section == "" {
 		return errors.New("no section provided")
@@ -191,7 +191,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 				newLineRaw = fmt.Sprintf("%s %s", newLineRaw, host)
 			}
 
-			if len(line.Comment) > 0 {
+			if line.Comment != "" {
 				newLineRaw = fmt.Sprintf("%s #%s", newLineRaw, line.Comment)
 			}
 
@@ -212,7 +212,7 @@ func (h *Hosts) Remove(ip string, hosts ...string) error {
 func (h *Hosts) getHostPosition(ip, host string, forceFile bool) int {
 	checkLines := h.FileLines
 
-	if len(h.Section) > 0 && !forceFile {
+	if h.Section != "" && !forceFile {
 		checkLines = h.SectionLines
 	}
 

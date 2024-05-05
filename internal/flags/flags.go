@@ -2,10 +2,10 @@ package flags
 
 import "github.com/spf13/cobra"
 
-// AllLines Set to true to display comments when listing
+// AllLines Set to true to display comments when listing.
 var AllLines bool
 
-// Comment Adds a comment to the entry for better identification later
+// Comment Adds a comment to the entry for better identification later.
 var Comment string
 
 // Section Is a named section with which to edit hosts in.

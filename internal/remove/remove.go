@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Remove deletes a host/ip entry
+// Remove deletes a host/ip entry.
 func Remove(cmd *cobra.Command, args []string) error {
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {

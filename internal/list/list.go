@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// List lists all the entries in the hosts file
+// List lists all the entries in the hosts file.
 func List(cmd *cobra.Command, args []string) error {
 	hosts, err := goodhosts.NewHosts(flags.Section)
 	if err != nil {
