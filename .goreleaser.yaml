@@ -1,3 +1,5 @@
+version: 2
+
 project_name: goodhosts
 
 env:
@@ -14,7 +16,7 @@ builds:
     main: ./cmd/goodhosts/main.go
     binary: goodhosts
     ldflags:
-      - -s -w -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Timestamp={{.Date}}
+      - -s -w -X github.com/ChrisWiegman/goodhosts/internal/cmd.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/internal/cmd.Timestamp={{.Date}}
   - id: linux
     goos:
       - linux
@@ -23,14 +25,14 @@ builds:
     main: ./cmd/goodhosts/main.go
     binary: goodhosts
     ldflags:
-      - -s -w -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/v4/internal/commands.Timestamp={{.Date}}
+      - -s -w -X github.com/ChrisWiegman/goodhosts/internal/cmd.Version={{.Version}} -X github.com/ChrisWiegman/goodhosts/internal/cmd.Timestamp={{.Date}}
 
 archives:
   - id: macos
-    builds:
+    ids:
       - macos
       - linux
-    format: zip
+    formats: [ 'zip' ]
     name_template: >-
       {{ .ProjectName }}_
       {{- if eq .Os "darwin" }}macos
@@ -43,14 +45,14 @@ archives:
       - CHANGELOG.md
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-devel"
+  version_template: "{{ incpatch .Version }}-devel"
 
 changelog:
-  skip: false
+  disable: false
 
 nfpms:
   - vendor: Chris Wiegman
-    builds:
+    ids:
       - linux
     license: MIT license
     homepage: https://github.com/ChrisWiegman/goodhosts
